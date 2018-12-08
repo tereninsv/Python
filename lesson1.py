@@ -102,7 +102,7 @@ def set_text(arg):
 @p
 @set_text("Hello")
 def data():
-    return
+    return ""
 
 
 print(data())
