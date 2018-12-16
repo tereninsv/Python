@@ -77,19 +77,17 @@
 #
 # Проверить работу программы через вызов функции write_order_to_json() с передачей в нее значений каждого параметра.
 
-import json
-
-
-def write_order_to_json(item, quantity, price, buyer, date):
-    data = dict(товар=item, количество=quantity, цена=price, покупатель=buyer, дата=date)
-    with open('orders.json', 'w') as outfile:
-
-        json.dump(data, outfile,ensure_ascii = False,indent=4)
-
-write_order_to_json('телефон', 2, 18000, 'Сергей', '10.12.2018')
-
-# товар (item), количество (quantity), цена (price), покупатель (buyer), дата (date)
-
+# import json
+#
+#
+# def write_order_to_json(item, quantity, price, buyer, date):
+#     data = dict(товар=item, количество=quantity, цена=price, покупатель=buyer, дата=date)
+#     with open('orders.json', 'w') as outfile:
+#
+#         json.dump(data, outfile,ensure_ascii = False,indent=4)
+#
+# if __name__ == "__main__":
+#     write_order_to_json('телефон', 2, 18000, 'Сергей', '10.12.2018')
 
 # 3. найти любую книгу fb2 и определить какой там формат и написать свой генератор книжек на питоне, который будет
 # принимать текст и какую-нибудь служебную инфу типа название книги, автор, издание и тд, и создавать файл в формате .fb2
@@ -99,3 +97,32 @@ write_order_to_json('телефон', 2, 18000, 'Сергей', '10.12.2018')
 # пользователя.
 # Мы при запуске загружаем JSON файл конфиг, в котором есть имя пользователя и пароль. А в процессе спрашиваем
 # логин\пароль и если они совпали, то говорим что всё хорошо, иначе говорим, что мы вас не знаем
+
+import json
+import os
+
+
+def authorized_keys():
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, 'authorized_keys.json')
+    with open(filename, 'r') as f:
+        data = json.loads(f.read())
+        print(data)
+    return  data
+
+def start(data):
+    while True:
+        login = input('введите логин')
+        if login == data.get("login"):
+            password = input('введите пароль')
+            if password == data.get("password"):
+                print('Добро пожаловать в систему')
+                break
+            else:
+                print('неверный пароль')
+        else:
+            print('пользователь не найден')
+
+if __name__ == "__main__":
+    data = authorized_keys()
+    start(data)
