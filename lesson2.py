@@ -30,3 +30,57 @@
 # пользователя.
 # Мы при запуске загружаем JSON файл конфиг, в котором есть имя пользователя и пароль. А в процессе спрашиваем
 # логин\пароль и если они совпали, то говорим что всё хорошо, иначе говорим, что мы вас не знаем
+
+import csv
+import os
+import re
+
+
+def get_data():
+    os_prod_list = []
+    os_name_list = []
+    os_code_list = []
+    os_type_list = []
+    main_data = [['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип системы']]
+    regex_prod = re.compile('Изготовитель системы')
+    regex_name = re.compile('Название ОС')
+    regex_code = re.compile('Код продукта')
+    regex_type = re.compile('Тип системы')
+
+    for i in os.listdir():
+        if i[0:4] == 'info':
+            f = open(i, 'r')
+            for i in f:
+                if regex_prod.search(i):
+                    i = i.rstrip().split(" - ")
+                    os_prod_list.append(i[1])
+                    continue
+                if regex_name.search(i):
+                    i = i.rstrip().split(" - ")
+                    os_name_list.append(i[1])
+                    continue
+                if regex_code.search(i):
+                    i = i.rstrip().split(" - ")
+                    os_code_list.append(i[1])
+                    continue
+                if regex_type.search(i):
+                    i = i.rstrip().split(" - ")
+                    os_type_list.append(i[1])
+                    continue
+            f.close()
+    i = len(os_prod_list) - 1
+    while i >= 0:
+        templist = [os_prod_list[i], os_name_list[i], os_code_list[i], os_type_list[i]]
+        main_data.append(templist)
+        i -= 1
+    return main_data
+
+
+def write_to_csv(main_data):
+    with open('main_data.txt', "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerows(main_data)
+    return
+
+if __name__ == "__main__":
+    write_to_csv(get_data())
