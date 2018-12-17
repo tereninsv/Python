@@ -108,21 +108,22 @@ def authorized_keys():
     with open(filename, 'r') as f:
         data = json.loads(f.read())
         print(data)
-    return  data
+    return data
+
 
 def start(data):
     while True:
-        login = input('введите логин')
+        login = input('Введите логин:')
         if login == data.get("login"):
-            password = input('введите пароль')
+            password = input('Введите пароль:')
             if password == data.get("password"):
                 print('Добро пожаловать в систему')
                 break
             else:
-                print('неверный пароль')
+                print('Неверный пароль')
         else:
-            print('пользователь не найден')
+            print('Пользователь не найден')
+
 
 if __name__ == "__main__":
-    data = authorized_keys()
-    start(data)
+    start(authorized_keys())
