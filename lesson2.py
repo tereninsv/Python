@@ -98,32 +98,31 @@
 # Мы при запуске загружаем JSON файл конфиг, в котором есть имя пользователя и пароль. А в процессе спрашиваем
 # логин\пароль и если они совпали, то говорим что всё хорошо, иначе говорим, что мы вас не знаем
 
-import json
-import os
-
-
-def authorized_keys():
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'authorized_keys.json')
-    with open(filename, 'r') as f:
-        data = json.loads(f.read())
-        print(data)
-    return data
-
-
-def start(data):
-    while True:
-        login = input('Введите логин:')
-        if login == data.get("login"):
-            password = input('Введите пароль:')
-            if password == data.get("password"):
-                print('Добро пожаловать в систему')
-                break
-            else:
-                print('Неверный пароль')
-        else:
-            print('Пользователь не найден')
-
-
-if __name__ == "__main__":
-    start(authorized_keys())
+# import json
+# import os
+#
+#
+# def authorized_keys():
+#     dirname = os.path.dirname(__file__)
+#     filename = os.path.join(dirname, 'authorized_keys.json')
+#     with open(filename, 'r') as f:
+#         data = json.loads(f.read())
+#     return data
+#
+#
+# def start(data):
+#     while True:
+#         login = input('Введите логин:')
+#         if login == data.get("login"):
+#             password = input('Введите пароль:')
+#             if password == data.get("password"):
+#                 print('Добро пожаловать в систему')
+#                 break
+#             else:
+#                 print('Неверный пароль')
+#         else:
+#             print('Пользователь не найден')
+#
+#
+# if __name__ == "__main__":
+#     start(authorized_keys())
