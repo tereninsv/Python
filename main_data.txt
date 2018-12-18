@@ -1,0 +1,4 @@
+Изготовитель системы,Название ОС,Код продукта,Тип системы
+Microsoft,10,1709,Windows
+Apple,Mojave,18C54,macOS
+RedHat,Centos,1810,RHEL
