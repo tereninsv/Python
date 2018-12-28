@@ -16,7 +16,7 @@ def server_response(code, alert):
 
 if __name__ == "__main__":
 
-    db_users = {"user123": "paswd123", "user1": "paswd1"}
+    db_users = {"user123": "paswd123", "user1": "paswd1", "1": "1"}
     db_users_online = []
 
     server = socket.socket()
