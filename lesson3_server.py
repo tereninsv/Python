@@ -26,6 +26,8 @@ if __name__ == "__main__":
 
     while True:
         client_action = eval(client.recv(1024).decode("UTF-8"))
+        if not client_action:
+            continue
 
         if client_action.get("action") == "authenticate":
             if client_action.get('user').get("account_name") in db_users.keys():
