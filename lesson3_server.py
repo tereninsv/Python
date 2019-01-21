@@ -1,6 +1,8 @@
 import socket
 import json
 import time
+from utils import dict_to_bytes, bytes_to_dict
+
 
 
 def action(type):
@@ -25,9 +27,12 @@ if __name__ == "__main__":
     client, adr = server.accept()
 
     while True:
-        client_action = eval(client.recv(1024).decode("UTF-8"))
-        if not client_action:
-            continue
+        recv_data = client.recv(1024).decode("UTF-8")
+        if not recv_data:
+            break
+        client_action = json.loads(recv_data)
+        # if not client_action:
+        #     continue
 
         if client_action.get("action") == "authenticate":
             if client_action.get('user').get("account_name") in db_users.keys():
