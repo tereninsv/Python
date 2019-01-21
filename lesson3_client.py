@@ -1,52 +1,63 @@
 import socket
 import json
 import time
+from utils import dict_to_bytes, bytes_to_dict
 
 
-def client_action(type, user, to='', misk=''):
-    if type == "authenticate":
-        server.send(json.dumps({"action": type, "time": time.time(),
-                                "user": {"account_name": user, "password": misk}},
-                               sort_keys=True, ensure_ascii=False, indent=4).encode("UTF-8"))
+class Client:
 
-    if type == "presence":
-        server.send(json.dumps({"action": type, "time": time.time(),
-                                "user": {"account_name": user, "status": misk}},
-                               sort_keys=True, ensure_ascii=False, indent=4).encode("UTF-8"))
+    def __init__(self, account_name, password):
+        self.account_name = account_name
+        self.password = password
+        self.s = socket.socket()
 
-    if type == "msg":
-        server.send(json.dumps({"action": type, "time": time.time(),
-                                "to": to, "from": user, "encoding": "ascii", "message": misk},
-                               sort_keys=True, ensure_ascii=False, indent=4).encode("UTF-8"))
+    def authenticate(self):
+        server.send(dict_to_bytes({"action": "authenticate", "time": time.time(),
+                                   "user": {"account_name": self.account_name, "password": self.password}}))
 
-    if type == "quit":
-        server.send(json.dumps({"action": type, "time": time.time(),
-                                "account_name": user},
-                               sort_keys=True, ensure_ascii=False, indent=4).encode("UTF-8"))
+    def presence(self, status):
+        server.send(dict_to_bytes({"action": "presence", "time": time.time(),
+                                   "user": {"account_name": self.account_name, "status": status}}))
 
+    def msg(self):
+        to = input('кому:')
+        message = input('сообщение:')
+        server.send(dict_to_bytes({"action": "msg", "time": time.time(),
+                                   "to": to, "from": self.account_name, "encoding": "ascii", "message": message}))
 
-def client_response():
-    pass
+    def quit(self):
+        server.send(dict_to_bytes({"action": "quit", "time": time.time(),
+                                   "account_name": self.account_name}))
+        server.close()
+        exit(0)
+
+    def say(self):
+        print(self.account_name, self.password)
+
+    def response(self):
+        server_response = bytes_to_dict(server.recv).get("response")
+        print(server_response)
+        return server_response
 
 
 if __name__ == "__main__":
-
     server = socket.socket()
     server.connect(('localhost', 7777))
-    login_response = 0
-    while login_response != '200':
-        username = input('введите логин:')
-        password = input('введите пароль:')
-        client_action("authenticate", username, '', password)
-        login_response = eval(server.recv(1024).decode("UTF-8")).get("response")
-        print(login_response)
-    client_action("presence", username, "Yep, I am here!")
 
-    while True:
-        action = input('введите команду:')
-        if action == 'quit':
-            client_action(action, username)
-            print('Вы покинули чат')
-            break
-        if action == 'msg':
-            client_action(action, username, input('кому сообщение:'), input('введите текст:'))
+    server_response = ''
+    while server_response != '200':
+        client = Client(input('введите логин:'), input('введите пароль:'))
+        client.authenticate()
+        server_response = client.response()
+
+chat = {
+    "msg": client.msg,
+    "quit": client.quit
+}
+
+while True:
+    act = input("введите действие:")
+    if chat.get(act):
+        chat[act]()
+    else:
+        print('такой команды не существует')
